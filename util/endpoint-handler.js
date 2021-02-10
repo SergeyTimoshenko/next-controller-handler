@@ -1,6 +1,6 @@
 import connect from 'util/mongodb';
 
-const handler = (controller) => async (req, res) => {
+ export default (controller) => async (req, res) => {
     await connect();
 
     try {
@@ -9,10 +9,7 @@ const handler = (controller) => async (req, res) => {
         return res.status(response.getStatus())
                   .send(response.getData());
     } catch (error) {
-        console.log(error)
         res.status(error.getStatus())
            .send(error.getMessage());
     }
 }
-
-export default handler

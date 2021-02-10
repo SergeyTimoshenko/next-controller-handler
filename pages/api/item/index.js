@@ -1,4 +1,4 @@
-import ItemController from 'util/api-controllers/item-controller';
-import handler from 'util/route-handler';
+import ItemController from 'util/api-controllers/item';
+import handler from 'util/endpoint-handler';
 
 export default handler(ItemController);
