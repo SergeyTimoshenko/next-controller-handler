@@ -1,6 +1,7 @@
 import dbConnect from "util/mongodb"
 import UserService from 'util/api-servises/user';
-import Error from "util/errors/error";
+import NotAllowedMethodError from "util/errors/not-allowed-method-error";
+import Response from "util/response";
 
 export default async ({query, body, method}, res) => {
     await dbConnect();
@@ -10,22 +11,24 @@ export default async ({query, body, method}, res) => {
 
         switch(method) {
             case 'GET': 
-                result = await UserService.findOne(query.id)
+                const user = await UserService.findOne(query.id)
+                result = new Response(user, Response.success)
                 break;
             case 'PUT':
-                result = await UserService.update(query.id, body)
+                await UserService.update(query.id, body)
+                result = new Response(null, Response.noContent)
                 break;
             case 'DELETE':
-                result = await UserService.delete(query.id)
+                await UserService.delete(query.id)
+                result = new Response(null, Response.noContent)
                 break;
             default:
-                throw new Error('Method not allowed', 405);
+                throw new NotAllowedMethodError();
         }
 
         res.status(result.getStatus())
             .send(result.getData());
     } catch (error) {
-        console.log(error)
         return res.status(error.getStatus())
            .send(error.getMessage());
     }
